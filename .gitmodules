@@ -1,0 +1,9 @@
+[submodule "a750_hardware/third_party/a750_control"]
+	path = a750_hardware/third_party/a750_control
+	url = https://github.com/adob/a750_control.git
+[submodule "a750_hardware/third_party/serialrpc"]
+	path = a750_hardware/third_party/serialrpc
+	url = https://github.com/adob/serialrpc.git
+[submodule "a750_hardware/third_party/baselib"]
+	path = a750_hardware/third_party/baselib
+	url = https://github.com/adob/baselib.git

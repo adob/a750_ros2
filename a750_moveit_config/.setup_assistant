@@ -1,0 +1,28 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: a750_description
+    relative_path: urdf/a750_rev1.urdf
+    xacro_args: plugin:=mock_components/GenericSystem use_fake_hardware:=true device_path:=
+  srdf:
+    relative_path: config/a750-rev1.srdf
+  package_settings:
+    author_name: Aleksandr Dobkin
+    author_email: alex@dobk.in
+    generated_timestamp: 1775865846
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity

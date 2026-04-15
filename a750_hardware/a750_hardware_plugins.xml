@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<library path="a750_hardware">
+  <class
+    name="a750_hardware/A750System"
+    type="a750_hardware::A750System"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>A-750 ros2_control SystemInterface</description>
+  </class>
+</library>
