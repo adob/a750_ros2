@@ -23,21 +23,11 @@ To use the [a750_ros2](https://github.com/adob/a750_ros2) repository, you'll als
 ```bash
 sudo apt install -y \
   ros-jazzy-joint-state-publisher-gui
-  #ros-jazzy-controller-manager \
-  #ros-jazzy-gripper-controllers \
+  ros-jazzy-controller-manager
   ros-jazzy-hardware-interface \
+  ros-jazzy-xacro \
+  ros-jazzy-moveit \
   g++-14
-  #ros-jazzy-joint-state-broadcaster \
-  #ros-jazzy-joint-trajectory-controller
-
-# You must also install the following packages when using MoveIt2.
-sudo apt install -y \
-  ros-jazzy-forward-command-controller \
-  ros-jazzy-moveit-configs-utils \
-  ros-jazzy-moveit-planners \
-  ros-jazzy-moveit-ros-move-group \
-  ros-jazzy-moveit-ros-visualization \
-  ros-jazzy-moveit-simple-controller-manager
 ```
 
 Source ROS 2 Environment:
@@ -96,4 +86,10 @@ To display the robot in RViz with a simple joint state GUI:
 
 ```bash
 ros2 launch a750_description visualize_a750.launch.py hwrev:=1
+```
+
+
+## MoveIt
+```bash
+ros2 launch a750_moveit_config demo.launch.py device_path:=/dev/ttyACM0
 ```

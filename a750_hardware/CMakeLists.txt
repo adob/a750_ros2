@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(a750_hardware)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   #add_compile_options(-Wall -Wextra -Wpedantic)
   add_compile_options(-Wall -Wextra -Wconversion
@@ -17,7 +19,7 @@ find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 
-add_library(${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} SHARED
   src/a750_system.cpp
 )
 
@@ -25,7 +27,7 @@ add_subdirectory(third_party/baselib EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/serialrpc EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/a750_control EXCLUDE_FROM_ALL)
 
- 
+
 target_include_directories(a750_hardware PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
