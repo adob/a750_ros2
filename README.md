@@ -27,6 +27,9 @@ sudo apt install -y \
   ros-jazzy-hardware-interface \
   ros-jazzy-xacro \
   ros-jazzy-moveit \
+  ros-jazzy-joint-trajectory-controller \
+  ros-jazzy-joint-state-broadcaster \
+  ros-dev-tools \
   g++-14
 ```
 
@@ -37,14 +40,6 @@ source /opt/ros/jazzy/setup.bash
 ```
 
 Install development tools at https://docs.ros.org/en/jazzy/Installation/Alternatives/Ubuntu-Development-Setup.html#install-development-tools-and-ros-tools.
-
-```bash
-sudo apt install -y \
-  python3-flake8-docstrings \
-  python3-pip \
-  python3-pytest-cov \
-  ros-dev-tools
-```
 
 ### Verify Installation
 
@@ -66,6 +61,19 @@ export ROS_WS=~/ros2_ws   # Customize workspace path
 # Create the workspace
 mkdir -p $ROS_WS/src
 
+
+# Set colcon defaults
+cd $ROS_WS
+cat > colcon_defaults.yaml <<EOF
+build:
+  cmake-args:
+    - "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+    - "--no-warn-unused-cli"
+    - "-DCMAKE_C_COMPILER=/usr/bin/gcc-14"
+    - "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14"
+EOF
+
+
 # Head to the workspace src directory
 cd $ROS_WS/src
 
@@ -81,6 +89,22 @@ colcon build
 source $ROS_WS/install/setup.bash
 ```
 
+### Configure udev
+<!--```bash
+This step grants the currently logged-in user access serial USB devices.
+
+sudo tee /etc/udev/rules.d/90-usb-serial.rules > /dev/null <<'EOF'
+KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty", TAG+="uaccess"
+KERNEL=="ttyACM[0-9]*", SUBSYSTEM=="tty", TAG+="uaccess"
+EOF
+```-->
+
+Add yourself to the dialout group for tty/serial permissions.
+```
+sudo usermod -a -G dialout $USER
+```
+Log out and log back in for this to take effect.
+
 ## Visualization
 To display the robot in RViz with a simple joint state GUI:
 
@@ -90,6 +114,7 @@ ros2 launch a750_description visualize_a750.launch.py hwrev:=1
 
 
 ## MoveIt
+Control the robot with MoveIt:
 ```bash
 ros2 launch a750_moveit_config demo.launch.py device_path:=/dev/ttyACM0
 ```
