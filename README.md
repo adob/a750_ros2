@@ -25,7 +25,8 @@ sudo apt install -y \
   ros-jazzy-joint-state-publisher-gui
   #ros-jazzy-controller-manager \
   #ros-jazzy-gripper-controllers \
-  #ros-jazzy-hardware-interface \
+  ros-jazzy-hardware-interface \
+  g++-14
   #ros-jazzy-joint-state-broadcaster \
   #ros-jazzy-joint-trajectory-controller
 
@@ -78,8 +79,9 @@ mkdir -p $ROS_WS/src
 # Head to the workspace src directory
 cd $ROS_WS/src
 
-# Clone the package
+# Clone packages
 git clone https://github.com/adob/a750_description.git
+git clone --recurse-submodules https://github.com/adob/a750_ros2.git
 
 # Build the workspace
 cd $ROS_WS
