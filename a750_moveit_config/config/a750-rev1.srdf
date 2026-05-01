@@ -18,6 +18,14 @@
         <joint name="joint6"/>
         <joint name="finger"/>
     </group>
+    <group name="arm-nogripper">
+        <joint name="joint1"/>
+        <joint name="joint2"/>
+        <joint name="joint3"/>
+        <joint name="joint4"/>
+        <joint name="joint5"/>
+        <joint name="joint6"/>
+    </group>
     <group name="gripper">
         <link name="gripper_base"/>
         <link name="left_finger_link"/>
@@ -31,6 +39,7 @@
         <joint name="joint4" value="0"/>
         <joint name="joint5" value="0"/>
         <joint name="joint6" value="0"/>
+        <joint name="finger" value="0.06"/>
     </group_state>
     <group_state name="rest" group="arm">
         <joint name="joint1" value="0"/>
@@ -39,6 +48,7 @@
         <joint name="joint4" value="0"/>
         <joint name="joint5" value="0"/>
         <joint name="joint6" value="0"/>
+        <joint name="finger" value="0.06"/>
     </group_state>
     <group_state name="open" group="gripper">
         <joint name="finger" value="0.06"/>
