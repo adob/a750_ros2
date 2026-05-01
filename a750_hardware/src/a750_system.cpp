@@ -1,10 +1,9 @@
 #include "a750_hardware/a750_system.hpp"
-#include "a750_control/robot.pb_msg.h"
+#include "a750_control/generated/proto/robot_service.pb_msg.h"
 #include "lib/error.h"
 #include "lib/fmt/fmt.h"
 #include "pluginlib/class_list_macros.hpp"
 #include <cmath>
-//#include "a750_control/a750.h"
 
 static const rclcpp::Logger LOGGER =
   rclcpp::get_logger("a750_hardware.A750System");
@@ -71,15 +70,6 @@ hardware_interface::CallbackReturn A750System::on_init(
   return CallbackReturn::SUCCESS;
 }
 
-// hardware_interface::CallbackReturn A750System::on_configure(const rclcpp_lifecycle::State & /*previous_state*/) {
-//   // A750System &s = *this;
-//   // s.joint_state_interfaces_;
-
-//   RCLCPP_INFO(LOGGER, "A750System::on_configure");
-//   set_state("foo", 1);
-
-//   return CallbackReturn::SUCCESS;
-// }
 
 std::vector<hardware_interface::StateInterface> A750System::export_state_interfaces()
 {
@@ -155,10 +145,9 @@ void A750System::set_state(a750pb::RobotState const &state) {
 
 bool A750System::read_joints() {
   A750System &s = *this;
-  //RCLCPP_INFO(LOGGER, "A750System::read_joints()");
 
   ErrorLogger err;
-  a750pb::RobotState resp = s.robot_.client.robot_service.read_state(err);
+  a750pb::RobotState resp = s.robot_.robot_service.read_state(err);
   if (err) {
     return false;
   }
@@ -173,7 +162,7 @@ hardware_interface::CallbackReturn A750System::on_activate(const rclcpp_lifecycl
   RCLCPP_INFO(LOGGER, "activating hardware interface...");
 
   ErrorLogger err;
-  a750pb::RobotState state = s.robot_.client.robot_service.start_realtime_control(err);
+  a750pb::RobotState state = s.robot_.robot_service.start_realtime_control(err);
   if (err) {
     return hardware_interface::CallbackReturn::ERROR;
   }
@@ -192,7 +181,7 @@ hardware_interface::CallbackReturn A750System::on_deactivate(
   RCLCPP_INFO(LOGGER, "deactivating hardware interface");
   ErrorLogger err;
   
-  s.robot_.client.robot_service.stop_realtime_control(err);
+  s.robot_.robot_service.stop_realtime_control(err);
   if (err) {
     return hardware_interface::CallbackReturn::ERROR;
   }
@@ -203,34 +192,12 @@ hardware_interface::CallbackReturn A750System::on_deactivate(
 hardware_interface::return_type A750System::read(
   const rclcpp::Time &, const rclcpp::Duration &)
 {
-  A750System &s = *this;
-
-  // if (!s.read_joints()) {
-  //   return hardware_interface::return_type::ERROR;
-  // }
-
   return hardware_interface::return_type::OK;
 }
 
 hardware_interface::return_type A750System::write(
   const rclcpp::Time &, const rclcpp::Duration &/*duration*/)
 {
-  // RCLCPP_INFO(LOGGER, "A750System::write()");
-  // for (int i = 0; i < (int) info_.joints.size(); i++) {
-  //   RCLCPP_INFO(LOGGER, "joint %d pos %f", i+1, cmd_pos_[i]);
-  // }
-
-  // RCLCPP_INFO(LOGGER, "WRITE pos %f %f %f %f %f %f; vel %f %f %f %f %f %f; eff %f %f %f %f %f %f; dur %f", 
-  //     cmd_pos_[0]*(180.0/M_PI), cmd_pos_[1]*(180.0/M_PI), cmd_pos_[2]*(180.0/M_PI), cmd_pos_[3]*(180.0/M_PI), cmd_pos_[4]*(180.0/M_PI), cmd_pos_[5]*(180.0/M_PI),
-  //     cmd_vel_[0]*(180.0/M_PI), cmd_vel_[1]*(180.0/M_PI), cmd_vel_[2]*(180.0/M_PI), cmd_vel_[3]*(180.0/M_PI), cmd_vel_[4]*(180.0/M_PI), cmd_vel_[5]*(180.0/M_PI),
-  //     cmd_eff_[0], cmd_eff_[1], cmd_eff_[2], cmd_eff_[3], cmd_eff_[4], cmd_eff_[5],
-  //     duration.seconds() * 1000);
-
-  // RCLCPP_INFO(LOGGER, "READ  pos %f %f %f %f %f %f; vel %f %f %f %f %f %f; eff %f %f %f %f %f %f", 
-  //     pos_[0]*(180.0/M_PI), pos_[1]*(180.0/M_PI), pos_[2]*(180.0/M_PI), pos_[3]*(180.0/M_PI), pos_[4]*(180.0/M_PI), pos_[5]*(180.0/M_PI),
-  //     vel_[0]*(180.0/M_PI), vel_[1]*(180.0/M_PI), vel_[2]*(180.0/M_PI), vel_[3]*(180.0/M_PI), vel_[4]*(180.0/M_PI), vel_[5]*(180.0/M_PI),
-  //     eff_[0], eff_[1], eff_[2], eff_[3], eff_[4], eff_[5]);
-
   A750System &s = *this;
   a750pb::CommandJointsRequest req;
   req.joint1.pos_setpoint_rad = float(cmd_pos_[0]);
@@ -266,7 +233,7 @@ hardware_interface::return_type A750System::write(
   req.gripper.vel_gain_nms_rad = DefaultVelGain[6];
 
   ErrorLogger err;
-  a750pb::RobotState state = s.robot_.client.robot_service.command_joints(req, err);
+  a750pb::RobotState state = s.robot_.robot_service.command_joints(req, err);
   if (err) {
     return hardware_interface::return_type::ERROR;
   }

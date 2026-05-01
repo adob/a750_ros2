@@ -4,13 +4,29 @@ project(a750_hardware)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  #add_compile_options(-Wall -Wextra -Wpedantic)
   add_compile_options(-Wall -Wextra -Wconversion
             -Wno-sign-compare -Wno-deprecated -Wno-sign-conversion
             -Wno-missing-field-initializers
             -Werror=shift-count-overflow
             -Werror=return-type)
 endif()
+
+include(cmake/CPM.cmake)
+
+CPMAddPackage(
+  NAME a750_control
+  GITHUB_REPOSITORY adob/a750_control
+  VERSION 0.0.0
+  GIT_TAG ad10c3dda79716600c088393482130ed1f40af8e
+)
+
+CPMAddPackage(
+  NAME baselib
+  GITHUB_REPOSITORY adob/baselib
+  VERSION 0.0.0
+  GIT_TAG 36f6c17ea5fcf481d9d6849566a980ca82b7d6e3
+  EXCLUDE_FROM_ALL ${A750_CONTROL_EXCLUDE_FROM_ALL}
+)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -23,11 +39,6 @@ add_library(${PROJECT_NAME} SHARED
   src/a750_system.cpp
 )
 
-add_subdirectory(third_party/baselib EXCLUDE_FROM_ALL)
-add_subdirectory(third_party/serialrpc EXCLUDE_FROM_ALL)
-add_subdirectory(third_party/a750_control EXCLUDE_FROM_ALL)
-
-
 target_include_directories(a750_hardware PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -37,13 +48,10 @@ ament_target_dependencies(a750_hardware
   rclcpp rclcpp_lifecycle hardware_interface pluginlib
 )
 
-#target_link_libraries(${PROJECT_NAME} l)
-
-#target_link_libraries(${PROJECT_NAME} PUBLIC baselib::baselib)
-#target_link_libraries(${PROJECT_NAME} a750_control::a750_control)
-#target_link_libraries(${PROJECT_NAME} serialrpc::serialrpc)
-target_link_libraries(${PROJECT_NAME} baselib::baselib)
-target_link_libraries(${PROJECT_NAME} a750_control::a750_control)
+target_link_libraries(${PROJECT_NAME} 
+  baselib::baselib
+  a750_control::a750_control
+)
 
 pluginlib_export_plugin_description_file(hardware_interface a750_hardware_plugins.xml)
 
