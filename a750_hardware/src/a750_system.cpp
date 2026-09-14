@@ -1,9 +1,10 @@
-#include "a750_hardware/a750_system.hpp"
-#include "a750_control/generated/proto/robot_service.pb_msg.h"
-#include "lib/error.h"
-#include "lib/fmt/fmt.h"
 #include "pluginlib/class_list_macros.hpp"
 #include <cmath>
+#include "a750_hardware/a750_system.hpp"
+#include "a750_control/generated/proto/robot_service.pb_msg.h"
+import lib.error;
+import lib.fmt;
+import lib.str;
 
 static const rclcpp::Logger LOGGER =
   rclcpp::get_logger("a750_hardware.A750System");
@@ -28,10 +29,10 @@ namespace a750_hardware
 {
 
 hardware_interface::CallbackReturn A750System::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
   A750System &a = *this;
-  if (hardware_interface::SystemInterface::on_init(info) !=
+  if (hardware_interface::SystemInterface::on_init(params) !=
       hardware_interface::CallbackReturn::SUCCESS)
   {
     return hardware_interface::CallbackReturn::ERROR;
